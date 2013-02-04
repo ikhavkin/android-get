@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import java.io.*;
+import java.util.ArrayList;
 
 public class AndroidGetActivity extends Activity {
     private static final int SELECTED_FILE_TO_LOAD = 1000;
@@ -30,7 +31,7 @@ public class AndroidGetActivity extends Activity {
         goButton = (Button) findViewById(R.id.goButton);
         fileListView = (ListView) findViewById(R.id.fileListView);
 
-        fileArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, new String[0]);
+        fileArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, new ArrayList<String>());
         fileListView.setAdapter(fileArrayAdapter);
     }
 
@@ -51,12 +52,15 @@ public class AndroidGetActivity extends Activity {
             if (requestCode == SELECTED_FILE_TO_LOAD) {
                 String result = data.getDataString();
 
-                try {
-                    loadFilesList(result);
-                }
-                catch (IOException exc) {
-                    // todo: proper error handling
-                    throw new RuntimeException(exc);
+                if (result != null) {
+                    Uri uri = Uri.parse(result);
+
+                    try {
+                        loadFilesList(uri);
+                    } catch (IOException exc) {
+                        // todo: proper error handling
+                        throw new RuntimeException(exc);
+                    }
                 }
             }
         }
@@ -64,37 +68,21 @@ public class AndroidGetActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void loadFilesList(String path) throws IOException {
+    private void loadFilesList(Uri contentUri) throws IOException {
         InputStream inputStream = null;
         try {
-            inputStream = new FileInputStream(path);
-            Reader reader = null;
+            inputStream = getContentResolver().openInputStream(contentUri);
+            Reader reader = new InputStreamReader(inputStream);
+            BufferedReader bufReader = new BufferedReader(reader);
 
-            try {
-                reader = new InputStreamReader(inputStream);
-                BufferedReader bufReader = null;
-
-                try {
-                    bufReader = new BufferedReader(reader);
-
-                    // Read input file line by line into list view.
-                    while (true) {
-                        String line = bufReader.readLine();
-                        if (line == null) {
-                            break;
-                        }
-
-                        fileArrayAdapter.add(line);
-                    }
-                } finally {
-                    if (bufReader != null) {
-                        bufReader.close();
-                    }
+            // Read input file line by line into list view.
+            while (true) {
+                String line = bufReader.readLine();
+                if (line == null) {
+                    break;
                 }
-            } finally {
-                if (reader != null) {
-                    reader.close();
-                }
+
+                fileArrayAdapter.add(line);
             }
         } finally {
             if (inputStream != null) {
