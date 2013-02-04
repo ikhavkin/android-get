@@ -4,10 +4,29 @@
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
         >
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" android:measureWithLargestChild="true">
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Load files..."
+                android:id="@+id/loadListButton" android:layout_weight="1"/>
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Go"
+                android:id="@+id/goButton" android:layout_gravity="left" android:minWidth="100dp"/>
+    </LinearLayout>
     <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Hello World, AndroidGetActivity"
-            />
+            android:text="Files to download:"
+            android:textIsSelectable="false" android:gravity="center_horizontal"/>
+    <ListView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/fileListView"/>
 </LinearLayout>
 
