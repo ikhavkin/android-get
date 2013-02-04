@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">aget</string>
+    <string name="go_title">Go</string>
+    <string name="load_files_title">Load files...</string>
+    <string name="files_to_download_label">Files to download:</string>
 </resources>

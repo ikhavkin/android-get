@@ -9,20 +9,20 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" android:measureWithLargestChild="true">
         <Button
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Load files..."
+                android:text="@string/load_files_title"
                 android:id="@+id/loadListButton" android:layout_weight="1"/>
         <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Go"
+                android:text="@string/go_title"
                 android:id="@+id/goButton" android:layout_gravity="left" android:minWidth="100dp"/>
     </LinearLayout>
     <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Files to download:"
+            android:text="@string/files_to_download_label"
             android:textIsSelectable="false" android:gravity="center_horizontal"/>
     <ListView
             android:layout_width="fill_parent"
