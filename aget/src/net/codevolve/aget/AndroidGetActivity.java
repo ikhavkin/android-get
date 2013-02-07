@@ -50,13 +50,11 @@ public class AndroidGetActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == SELECTED_FILE_TO_LOAD) {
-                String result = data.getDataString();
+                String result = data.getData().getPath();
 
                 if (result != null) {
-                    Uri uri = Uri.parse(result);
-
                     try {
-                        loadFilesList(uri);
+                        loadFilesList(result);
                     } catch (IOException exc) {
                         // todo: proper error handling
                         throw new RuntimeException(exc);
@@ -68,11 +66,10 @@ public class AndroidGetActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void loadFilesList(Uri contentUri) throws IOException {
-        InputStream inputStream = null;
+    private void loadFilesList(String filename) throws IOException {
+        Reader reader = null;
         try {
-            inputStream = getContentResolver().openInputStream(contentUri);
-            Reader reader = new InputStreamReader(inputStream);
+            reader = new FileReader(filename);
             BufferedReader bufReader = new BufferedReader(reader);
 
             // Read input file line by line into list view.
@@ -85,8 +82,8 @@ public class AndroidGetActivity extends Activity {
                 fileArrayAdapter.add(line);
             }
         } finally {
-            if (inputStream != null) {
-                inputStream.close();
+            if (reader != null) {
+                reader.close();
             }
         }
     }
