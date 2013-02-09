@@ -18,7 +18,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/go_title"
                 android:id="@+id/goButton" android:layout_gravity="left" android:minWidth="100dp"
-                android:onClick="launchDownloads"/>
+                android:onClick="launchDownloads" android:enabled="false"/>
     </LinearLayout>
     <TextView
             android:layout_width="fill_parent"

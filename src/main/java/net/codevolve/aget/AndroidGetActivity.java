@@ -54,6 +54,7 @@ public class AndroidGetActivity extends Activity {
 
     public void launchDownloads(View view) {
         downloader.enqueueFiles(fileUris);
+        fileUris.clear();
     }
 
     @Override
@@ -80,21 +81,27 @@ public class AndroidGetActivity extends Activity {
         Reader reader = null;
         try {
             reader = new FileReader(filename);
-            BufferedReader bufReader = new BufferedReader(reader);
-
-            // Read input file line by line into list view.
-            while (true) {
-                String line = bufReader.readLine();
-                if (line == null) {
-                    break;
-                }
-
-                fileArrayAdapter.add(line);
-            }
+            loadFilesList(reader);
         } finally {
             if (reader != null) {
                 reader.close();
             }
         }
+    }
+
+    protected void loadFilesList(Reader reader) throws IOException {
+        BufferedReader bufReader = new BufferedReader(reader);
+
+        // Read input file line by line into list view.
+        while (true) {
+            String line = bufReader.readLine();
+            if (line == null) {
+                break;
+            }
+
+            fileArrayAdapter.add(line);
+        }
+
+        goButton.setEnabled(!fileUris.isEmpty());
     }
 }
