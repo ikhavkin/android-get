@@ -31,12 +31,12 @@ public class FileDownloaderTest {
         doCallRealMethod().when(mockedDownloader).enqueueFiles(Matchers.anyListOf(String.class));
 
         // Act.
-        mockedDownloader.enqueueFiles(Arrays.asList("file://file1", "file://file2", "file://file3"));
+        mockedDownloader.enqueueFiles(Arrays.asList("http://file1", "http://file2", "http://file3"));
 
         // Assert.
-        verify(mockedDownloader).enqueueFile(Uri.parse("file://file1"));
-        verify(mockedDownloader).enqueueFile(Uri.parse("file://file2"));
-        verify(mockedDownloader).enqueueFile(Uri.parse("file://file3"));
+        verify(mockedDownloader).enqueueFile(Uri.parse("http://file1"));
+        verify(mockedDownloader).enqueueFile(Uri.parse("http://file2"));
+        verify(mockedDownloader).enqueueFile(Uri.parse("http://file3"));
     }
 
     @Test
@@ -46,9 +46,9 @@ public class FileDownloaderTest {
                 thenReturn(123L);
 
         // Act.
-        downloader.enqueueFile(Uri.parse("file://file1"));
+        downloader.enqueueFile(Uri.parse("http://file1"));
 
         // Assert.
-        verify(downloadManager).enqueue(any(DownloadManager.Request.class));
+        verify(downloadManager, only()).enqueue(any(DownloadManager.Request.class));
     }
 }

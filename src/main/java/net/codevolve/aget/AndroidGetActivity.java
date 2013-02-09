@@ -10,11 +10,17 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 public class AndroidGetActivity extends Activity {
     private static final int SELECTED_FILE_TO_LOAD = 1000;
+    private final Logger logger = Logger.getLogger("AndroidGetActivity");
+
     private Button loadListButton;
     private Button goButton;
     private ListView fileListView;
@@ -28,6 +34,14 @@ public class AndroidGetActivity extends Activity {
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        // todo: proper UI dialog...
+//        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+//            @Override
+//            public void uncaughtException(Thread thread, Throwable throwable) {
+//                logger.log(Level.SEVERE, String.format("Unhandled exception in thread %s", thread.getId()), throwable);
+//            }
+//        });
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
