@@ -3,7 +3,6 @@ package net.codevolve.aget;
 import android.app.DownloadManager;
 import android.net.Uri;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,13 +23,6 @@ public class FileDownloaderTest {
         downloadManager = mock(DownloadManager.class);
         downloader = new FileDownloader(downloadManager);
         mockedDownloader = mock(FileDownloader.class);
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        if (downloader != null) {
-            downloader.close();
-        }
     }
 
     @Test

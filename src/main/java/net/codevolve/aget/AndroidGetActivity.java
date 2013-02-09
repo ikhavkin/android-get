@@ -1,6 +1,7 @@
 package net.codevolve.aget;
 
 import android.app.Activity;
+import android.app.DownloadManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,6 +20,9 @@ public class AndroidGetActivity extends Activity {
     private ListView fileListView;
     private ArrayAdapter<String> fileArrayAdapter;
 
+    private FileDownloader downloader;
+    private ArrayList<String> fileUris;
+
     /**
      * Called when the activity is first created.
      */
@@ -27,11 +31,15 @@ public class AndroidGetActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        fileUris = new ArrayList<>();
+        DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+        downloader = new FileDownloader(downloadManager);
+
         loadListButton = (Button) findViewById(R.id.loadListButton);
         goButton = (Button) findViewById(R.id.goButton);
         fileListView = (ListView) findViewById(R.id.fileListView);
 
-        fileArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, new ArrayList<String>());
+        fileArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, fileUris);
         fileListView.setAdapter(fileArrayAdapter);
     }
 
@@ -42,6 +50,10 @@ public class AndroidGetActivity extends Activity {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setDataAndType(Uri.parse("file://"), "file/*");
         startActivityForResult(intent, SELECTED_FILE_TO_LOAD);
+    }
+
+    public void launchDownloads(View view) {
+        downloader.enqueueFiles(fileUris);
     }
 
     @Override
