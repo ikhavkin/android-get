@@ -4,7 +4,11 @@ import android.app.DownloadManager;
 import android.net.Uri;
 import android.os.Environment;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class FileDownloader {
+    private final Logger logger = Logger.getLogger("FileDownloader");
     private final DownloadManager downloadManager;
 
     public FileDownloader(DownloadManager downloadManager) {
@@ -12,8 +16,18 @@ public class FileDownloader {
     }
 
     public void enqueueFiles(Iterable<String> fileUrls) {
-        for(String file : fileUrls) {
-            enqueueFile(Uri.parse(file));
+        for (String file : fileUrls) {
+            Uri fileUri;
+            try {
+                fileUri = Uri.parse(file);
+            } catch (Exception exc) {
+                logger.log(Level.SEVERE, String.format("Failed to parse URI: '%s'", file), exc);
+                continue;
+            }
+            String scheme = fileUri.getScheme();
+            if ("http".equals(scheme) || "https".equals(scheme)) {
+                enqueueFile(fileUri);
+            }
         }
     }
 
