@@ -45,7 +45,7 @@ public class AndroidGetActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        fileUris = new ArrayList<>();
+        fileUris = new ArrayList<String>();
         DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
         downloader = new FileDownloader(downloadManager);
 
@@ -53,7 +53,7 @@ public class AndroidGetActivity extends Activity {
         goButton = (Button) findViewById(R.id.goButton);
         fileListView = (ListView) findViewById(R.id.fileListView);
 
-        fileArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, fileUris);
+        fileArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, fileUris);
         fileListView.setAdapter(fileArrayAdapter);
     }
 
