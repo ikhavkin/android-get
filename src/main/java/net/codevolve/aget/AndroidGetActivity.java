@@ -37,8 +37,6 @@ public class AndroidGetActivity extends Activity {
 
     /**
      * Opens an activity to load list of files to download.
-     *
-     * @param view view.
      */
     public void openFilesToLoadActivity(View view) {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
