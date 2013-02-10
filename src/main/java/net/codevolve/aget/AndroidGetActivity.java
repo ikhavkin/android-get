@@ -1,8 +1,11 @@
 package net.codevolve.aget;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -15,6 +18,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class AndroidGetActivity extends Activity {
@@ -28,6 +32,7 @@ public class AndroidGetActivity extends Activity {
 
     private FileDownloader downloader;
     private ArrayList<String> fileUris;
+    private boolean hasCheckedGetContent = false;
 
     /**
      * Called when the activity is first created.
@@ -63,7 +68,35 @@ public class AndroidGetActivity extends Activity {
     public void openFilesToLoadActivity(View view) {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setDataAndType(Uri.parse("file://"), "file/*");
+
+        if (!checkIntent(intent)) {
+            return;
+        }
+
         startActivityForResult(intent, SELECTED_FILE_TO_LOAD);
+    }
+
+    protected boolean checkIntent(Intent intent) {
+        if (!hasCheckedGetContent) {
+            final PackageManager packageManager = getPackageManager();
+            final List<ResolveInfo> list = packageManager.queryIntentActivities(intent,
+                    PackageManager.GET_ACTIVITIES);
+
+            if (list.isEmpty()) {
+                logger.severe("No ACTION_GET_CONTENT handler!");
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+                alertDialogBuilder.setTitle(getString(R.string.no_content_handler_title));
+                alertDialogBuilder.setMessage(getString(R.string.no_content_handler_message));
+                alertDialogBuilder.setPositiveButton(getString(R.string.OK), null);
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+
+                return false;
+            } else {
+                hasCheckedGetContent = true;
+            }
+        }
+        return true;
     }
 
     public void launchDownloads(View view) {

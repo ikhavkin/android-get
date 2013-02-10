@@ -45,6 +45,8 @@ public class AndroidGetActivityTest {
 
     @Test
     public void When_load_button_clicked_it_should_switch_to_get_content_activity() {
+        activity.checkIntentStubResult = true;
+
         loadButton.performClick();
 
         ShadowActivity.IntentForResult intentForResult =
@@ -70,6 +72,14 @@ public class AndroidGetActivityTest {
     }
 
     private class TestableAndroidGetActivity extends AndroidGetActivity {
+        Boolean checkIntentStubResult = null;
+
+        @Override
+        protected boolean checkIntent(Intent intent) {
+            return checkIntentStubResult == null ?
+                    super.checkIntent(intent) : checkIntentStubResult;
+        }
+
         @Override
         public void loadFilesList(Reader reader) throws IOException {
             super.loadFilesList(reader);

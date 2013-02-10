@@ -4,4 +4,10 @@
     <string name="go_title">Go</string>
     <string name="load_files_title">Load files…</string>
     <string name="files_to_download_label">Files to download:</string>
+    <string name="no_content_handler_title">Cannot view filesystem!</string>
+    <string name="no_content_handler_message">
+        There is no application installed to browse filesystem for file.
+        Please, install file viewer (e.g. Total Commander).
+    </string>
+    <string name="OK">OK</string>
 </resources>
