@@ -13,3 +13,4 @@ before_install:
   - android list sdk
   - android list targets
   - android update sdk --filter 1,2,7 --no-ui --force
+  - mvn clean test
