@@ -1,7 +1,9 @@
 language: java
 before_install:
   # download the latest android sdk and unzip
+  - uname -a
   - pwd
+  - sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch
   - wget http://dl.google.com/android/android-sdk_r21-linux.tgz
   - tar -zxf android-sdk_r21-linux.tgz
   # setup your ANDROID_HOME and PATH environment variables
