@@ -7,9 +7,9 @@ import android.widget.ListView;
 import com.xtremelabs.robolectric.Robolectric;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 import com.xtremelabs.robolectric.shadows.ShadowActivity;
+import com.xtremelabs.robolectric.shadows.ShadowAlertDialog;
 import com.xtremelabs.robolectric.shadows.ShadowListView;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -45,13 +45,32 @@ public class AndroidGetActivityTest {
 
     @Test
     public void When_load_button_clicked_it_should_switch_to_get_content_activity() {
+        // Arrange.
         activity.checkIntentStubResult = true;
 
+        // Act.
         loadButton.performClick();
 
+        // Assert.
         ShadowActivity.IntentForResult intentForResult =
                 Robolectric.shadowOf(activity).getNextStartedActivityForResult();
         assertThat(intentForResult.intent.getAction(), equalTo(Intent.ACTION_GET_CONTENT));
+    }
+
+    @Test
+    public void When_load_clicked_and_cannot_get_content_it_should_show_error_dialog_and_not_switch_activity() {
+        // Arrange.
+        activity.checkIntentStubResult = null;
+
+        // Act.
+        loadButton.performClick();
+
+        // Assert.
+        ShadowAlertDialog alert = Robolectric.shadowOf(ShadowAlertDialog.getLatestAlertDialog());
+        String errorMessage = activity.getResources().getString(R.string.no_content_handler_message);
+        assertThat(alert.getMessage(), equalTo(errorMessage));
+        Intent intent = Robolectric.shadowOf(activity).getNextStartedActivity();
+        assertThat(intent, equalTo(null));
     }
 
     @Test
@@ -62,13 +81,13 @@ public class AndroidGetActivityTest {
     }
 
     @Test
-    @Ignore("Don't get what is wrong here :)")
     public void When_has_loaded_3_file_uris_list_view_has_three_items() throws Exception {
         activity.loadFilesList(new StringReader("file://file1\nfile://file2\nfile://file3\n"));
 
         ListView listView = (ListView) activity.findViewById(R.id.fileListView);
         ShadowListView shadowListView = Robolectric.shadowOf(listView);
-        assertThat(shadowListView.getChildCount(), equalTo(3));
+        int count = shadowListView.getAdapter().getCount();
+        assertThat(count, equalTo(3));
     }
 
     private class TestableAndroidGetActivity extends AndroidGetActivity {

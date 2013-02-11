@@ -82,7 +82,7 @@ public class AndroidGetActivity extends Activity {
             final List<ResolveInfo> list = packageManager.queryIntentActivities(intent,
                     PackageManager.GET_ACTIVITIES);
 
-            if (list.isEmpty()) {
+            if (list == null || list.isEmpty()) {
                 logger.severe("No ACTION_GET_CONTENT handler!");
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
                 alertDialogBuilder.setTitle(getString(R.string.no_content_handler_title));

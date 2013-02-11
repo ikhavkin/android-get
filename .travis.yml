@@ -1,9 +1,10 @@
 language: java
 before_install:
-  # download the latest android sdk and unzip
   - uname -a
   - pwd
+  # install x86 compatibility libs (we assume x64 box here)
   - sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch
+  # download the latest android sdk and unzip
   - wget http://dl.google.com/android/android-sdk_r21-linux.tgz
   - tar -zxf android-sdk_r21-linux.tgz
   # setup your ANDROID_HOME and PATH environment variables
@@ -13,5 +14,5 @@ before_install:
   # you are building for android (run "android list sdk" to get the full list)
   - pwd
   - android list sdk
-  - android list targets
   - android update sdk --filter 1,2,7 --no-ui --force
+  - android list targets
