@@ -1,8 +1,6 @@
 package net.codevolve.aget;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DownloadManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -12,6 +10,10 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import com.google.inject.Inject;
+import roboguice.activity.RoboActivity;
+import roboguice.inject.InjectResource;
+import roboguice.inject.InjectView;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -21,18 +23,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class AndroidGetActivity extends Activity {
+public class AndroidGetActivity extends RoboActivity {
     private static final int SELECTED_FILE_TO_LOAD = 1000;
     private final Logger logger = Logger.getLogger("AndroidGetActivity");
 
+    @InjectView(R.id.loadListButton)
     private Button loadListButton;
+    @InjectView(R.id.goButton)
     private Button goButton;
+    @InjectView(R.id.fileListView)
     private ListView fileListView;
     private ArrayAdapter<String> fileArrayAdapter;
 
+    @Inject
     private FileDownloader downloader;
     private ArrayList<String> fileUris;
     private boolean hasCheckedGetContent = false;
+
+    @InjectResource(R.string.no_content_handler_message)
+    private String noContentHandlerMessage;
+    @InjectResource(R.string.no_content_handler_title)
+    private String noContentHandlerTitle;
 
     /**
      * Called when the activity is first created.
@@ -51,12 +62,6 @@ public class AndroidGetActivity extends Activity {
         setContentView(R.layout.main);
 
         fileUris = new ArrayList<String>();
-        DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-        downloader = new FileDownloader(downloadManager);
-
-        loadListButton = (Button) findViewById(R.id.loadListButton);
-        goButton = (Button) findViewById(R.id.goButton);
-        fileListView = (ListView) findViewById(R.id.fileListView);
 
         fileArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, fileUris);
         fileListView.setAdapter(fileArrayAdapter);
@@ -85,8 +90,8 @@ public class AndroidGetActivity extends Activity {
             if (list == null || list.isEmpty()) {
                 logger.severe("No ACTION_GET_CONTENT handler!");
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-                alertDialogBuilder.setTitle(getString(R.string.no_content_handler_title));
-                alertDialogBuilder.setMessage(getString(R.string.no_content_handler_message));
+                alertDialogBuilder.setTitle(noContentHandlerTitle);
+                alertDialogBuilder.setMessage(noContentHandlerMessage);
                 alertDialogBuilder.setPositiveButton(getString(R.string.OK), null);
                 AlertDialog alertDialog = alertDialogBuilder.create();
                 alertDialog.show();

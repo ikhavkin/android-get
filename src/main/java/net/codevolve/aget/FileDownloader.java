@@ -3,6 +3,7 @@ package net.codevolve.aget;
 import android.app.DownloadManager;
 import android.net.Uri;
 import android.os.Environment;
+import com.google.inject.Inject;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,6 +12,7 @@ public class FileDownloader {
     private final Logger logger = Logger.getLogger("FileDownloader");
     private final DownloadManager downloadManager;
 
+    @Inject
     public FileDownloader(DownloadManager downloadManager) {
         this.downloadManager = downloadManager;
     }
