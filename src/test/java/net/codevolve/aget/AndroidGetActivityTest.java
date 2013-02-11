@@ -10,6 +10,7 @@ import com.xtremelabs.robolectric.shadows.ShadowActivity;
 import com.xtremelabs.robolectric.shadows.ShadowAlertDialog;
 import com.xtremelabs.robolectric.shadows.ShadowListView;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -88,6 +89,34 @@ public class AndroidGetActivityTest {
         ShadowListView shadowListView = Robolectric.shadowOf(listView);
         int count = shadowListView.getAdapter().getCount();
         assertThat(count, equalTo(3));
+    }
+
+    @Test
+    public void When_has_loaded_file_and_Go_clicked_should_clear_list() throws Exception {
+        // Arrange.
+        activity.loadFilesList(new StringReader("file://file1"));
+
+        // Act.
+        goButton.performClick();
+
+        // Assert.
+        ListView listView = (ListView) activity.findViewById(R.id.fileListView);
+        ShadowListView shadowListView = Robolectric.shadowOf(listView);
+        int count = shadowListView.getAdapter().getCount();
+        assertThat(count, equalTo(0));
+    }
+
+    @Test
+    @Ignore("Write it...")
+    public void When_has_loaded_file_and_Go_clicked_should_start_file_download() throws Exception {
+        // Arrange.
+        activity.loadFilesList(new StringReader("file://file1"));
+
+        // Act.
+        goButton.performClick();
+
+        // Assert.
+        // todo: ...
     }
 
     private class TestableAndroidGetActivity extends AndroidGetActivity {
