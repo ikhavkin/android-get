@@ -44,6 +44,10 @@ public class AndroidGetActivity extends RoboActivity {
     private String noContentHandlerMessage;
     @InjectResource(R.string.no_content_handler_title)
     private String noContentHandlerTitle;
+    @InjectResource(R.string.failed_to_load_list_title)
+    private String failedToLoadListTitle;
+    @InjectResource(R.string.failed_to_load_list_message)
+    private String failedToLoadListMessage;
 
     /**
      * Called when the activity is first created.
@@ -112,14 +116,23 @@ public class AndroidGetActivity extends RoboActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == SELECTED_FILE_TO_LOAD) {
-                String result = data.getData().getPath();
+                Uri uri = data.getData();
 
-                if (result != null) {
-                    try {
-                        loadFilesList(result);
-                    } catch (IOException exc) {
-                        // todo: proper error handling
-                        throw new RuntimeException(exc);
+                if (uri != null) {
+                    String path = uri.getPath();
+
+                    if (path != null) {
+                        try {
+                            loadFilesList(path);
+                        } catch (IOException exc) {
+                            Log.e(TAG, "Failed to load list of files!", exc);
+                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+                            alertDialogBuilder.setTitle(failedToLoadListTitle);
+                            alertDialogBuilder.setMessage(failedToLoadListMessage);
+                            alertDialogBuilder.setPositiveButton(getString(R.string.OK), null);
+                            AlertDialog alertDialog = alertDialogBuilder.create();
+                            alertDialog.show();
+                        }
                     }
                 }
             }

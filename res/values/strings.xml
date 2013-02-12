@@ -9,5 +9,9 @@
         There is no application installed to browse filesystem for file.
         Please, install file viewer (e.g. Total Commander).
     </string>
+    <string name="failed_to_load_list_title">Failed to load list!</string>
+    <string name="failed_to_load_list_message">
+        Cannot read list of files that you have chosen.
+    </string>
     <string name="OK">OK</string>
 </resources>
