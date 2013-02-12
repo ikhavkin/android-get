@@ -1,16 +1,17 @@
 package net.codevolve.aget;
 
+import android.app.DownloadManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ListView;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.xtremelabs.robolectric.Robolectric;
-import com.xtremelabs.robolectric.RobolectricTestRunner;
 import com.xtremelabs.robolectric.shadows.ShadowActivity;
 import com.xtremelabs.robolectric.shadows.ShadowAlertDialog;
 import com.xtremelabs.robolectric.shadows.ShadowListView;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -20,13 +21,18 @@ import java.io.StringReader;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.*;
 
-@RunWith(RobolectricTestRunner.class)
 /**
  * Integration tests for @see AndroidGetActivity .
  */
+@RunWith(InjectedTestRunner.class)
 public class AndroidGetActivityTest {
+    @Inject
+    protected Injector injector;
+
     TestableAndroidGetActivity activity;
+
     private Button goButton;
     private Button loadButton;
 
@@ -82,6 +88,11 @@ public class AndroidGetActivityTest {
     }
 
     @Test
+    public void When_has_loaded_damaged_uri_should_not_throw() throws Exception {
+        activity.loadFilesList(new StringReader("sd % %# fsdfsdf sd "));
+    }
+
+    @Test
     public void When_has_loaded_3_file_uris_list_view_has_three_items() throws Exception {
         activity.loadFilesList(new StringReader("file://file1\nfile://file2\nfile://file3\n"));
 
@@ -107,19 +118,36 @@ public class AndroidGetActivityTest {
     }
 
     @Test
-    @Ignore("Write it...")
     public void When_has_loaded_file_and_Go_clicked_should_start_file_download() throws Exception {
         // Arrange.
-        activity.loadFilesList(new StringReader("file://file1"));
+        activity.loadFilesList(new StringReader("http://file1"));
+        DownloadManager downloadManager = injector.getInstance(DownloadManager.class);
+        when(downloadManager.enqueue(any(DownloadManager.Request.class))).
+                thenReturn(123L);
 
         // Act.
         goButton.performClick();
 
         // Assert.
-        // todo: ...
+        verify(downloadManager, only()).enqueue(any(DownloadManager.Request.class));
     }
 
-    private class TestableAndroidGetActivity extends AndroidGetActivity {
+    @Test
+    public void When_has_loaded_damaged_uri_and_Go_clicked_should_ignore_file() throws Exception {
+        // Arrange.
+        activity.loadFilesList(new StringReader("er fgd $$% W9 3"));
+        DownloadManager downloadManager = injector.getInstance(DownloadManager.class);
+        when(downloadManager.enqueue(any(DownloadManager.Request.class))).
+                thenReturn(123L);
+
+        // Act.
+        goButton.performClick();
+
+        // Assert.
+        verify(downloadManager, never()).enqueue(any(DownloadManager.Request.class));
+    }
+
+    private static class TestableAndroidGetActivity extends AndroidGetActivity {
         Boolean checkIntentStubResult = null;
 
         @Override

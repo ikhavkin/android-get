@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -21,11 +22,10 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class AndroidGetActivity extends RoboActivity {
     private static final int SELECTED_FILE_TO_LOAD = 1000;
-    private final Logger logger = Logger.getLogger("AndroidGetActivity");
+    private static final String TAG = "AndroidGetActivity";
 
     @InjectView(R.id.loadListButton)
     private Button loadListButton;
@@ -33,11 +33,11 @@ public class AndroidGetActivity extends RoboActivity {
     private Button goButton;
     @InjectView(R.id.fileListView)
     private ListView fileListView;
-    private ArrayAdapter<String> fileArrayAdapter;
+    private ArrayAdapter<Uri> fileArrayAdapter;
 
     @Inject
     private FileDownloader downloader;
-    private ArrayList<String> fileUris;
+    private ArrayList<Uri> fileUris;
     private boolean hasCheckedGetContent = false;
 
     @InjectResource(R.string.no_content_handler_message)
@@ -61,9 +61,8 @@ public class AndroidGetActivity extends RoboActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        fileUris = new ArrayList<String>();
-
-        fileArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, fileUris);
+        fileUris = new ArrayList<Uri>();
+        fileArrayAdapter = new ArrayAdapter<Uri>(this, android.R.layout.simple_list_item_1, fileUris);
         fileListView.setAdapter(fileArrayAdapter);
     }
 
@@ -88,7 +87,7 @@ public class AndroidGetActivity extends RoboActivity {
                     PackageManager.GET_ACTIVITIES);
 
             if (list == null || list.isEmpty()) {
-                logger.severe("No ACTION_GET_CONTENT handler!");
+                Log.e(TAG, "No ACTION_GET_CONTENT handler!");
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
                 alertDialogBuilder.setTitle(noContentHandlerTitle);
                 alertDialogBuilder.setMessage(noContentHandlerMessage);
@@ -151,7 +150,13 @@ public class AndroidGetActivity extends RoboActivity {
                 break;
             }
 
-            fileArrayAdapter.add(line);
+            Uri fileUri;
+            try {
+                fileUri = Uri.parse(line);
+                fileArrayAdapter.add(fileUri);
+            } catch (Exception exc) {
+                Log.w(TAG, String.format("failed to parse URI: %s", line), exc);
+            }
         }
 
         goButton.setEnabled(!fileUris.isEmpty());
