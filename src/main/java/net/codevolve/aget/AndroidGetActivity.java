@@ -105,7 +105,7 @@ public class AndroidGetActivity extends RoboActivity {
 
     public void launchDownloads(View view) {
         downloader.enqueueFiles(fileUris);
-        fileUris.clear();
+        fileArrayAdapter.clear();
     }
 
     @Override
