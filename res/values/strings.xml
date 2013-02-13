@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">aget</string>
     <string name="go_title">Go</string>
-    <string name="load_files_title">Load files…</string>
+    <string name="load_files_title">Load files list…</string>
     <string name="files_to_download_label">Files to download:</string>
     <string name="no_content_handler_title">Cannot view filesystem!</string>
     <string name="no_content_handler_message">
@@ -14,4 +14,6 @@
         Cannot read list of files that you have chosen.
     </string>
     <string name="OK">OK</string>
+    <string name="change_dest_title">…</string>
+    <string name="destination_folder_label">Destination folder:</string>
 </resources>

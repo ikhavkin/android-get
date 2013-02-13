@@ -4,15 +4,34 @@
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
         >
+    <TextView android:layout_width="fill_parent" android:layout_height="wrap_content"
+              android:text="@string/destination_folder_label" android:textIsSelectable="false"
+              android:gravity="center_horizontal"/>
+    <LinearLayout android:orientation="horizontal" android:layout_width="fill_parent"
+                  android:layout_height="wrap_content" android:measureWithLargestChild="true"
+            >
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView" android:layout_weight="10" android:layout_gravity="center_vertical"
+                android:singleLine="true"
+                android:textIsSelectable="false" android:textSize="@dimen/dest_folder_text_size"
+                android:text="rthyr hrth rt hrt "/>
+        <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/change_dest_title"
+                android:id="@+id/changeDestButton"
+                android:onClick="launchDownloads"
+                />
+    </LinearLayout>
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" android:measureWithLargestChild="true">
         <Button
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/load_files_title"
-                android:id="@+id/loadListButton" android:layout_weight="1" android:onClick="openFilesToLoadActivity"/>
+                android:id="@+id/loadListButton" android:layout_weight="1" android:onClick="openFilesToLoadActivity"
+                />
         <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
