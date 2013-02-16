@@ -20,6 +20,10 @@
         </repository>
     </repositories>
 
+    <properties>
+        <robospice.version>1.4.0</robospice.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.google.android</groupId>
@@ -39,7 +43,7 @@
         <dependency>
             <groupId>com.pivotallabs</groupId>
             <artifactId>robolectric</artifactId>
-            <version>1.2-SNAPSHOT</version>
+            <version>1.2</version>
             <scope>test</scope>
         </dependency>
 
@@ -47,6 +51,12 @@
             <groupId>org.roboguice</groupId>
             <artifactId>roboguice</artifactId>
             <version>2.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.octo.android.robospice</groupId>
+            <artifactId>robospice</artifactId>
+            <version>${robospice.version}</version>
         </dependency>
 
         <dependency>
