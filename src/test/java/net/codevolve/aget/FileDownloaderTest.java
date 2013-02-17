@@ -28,18 +28,18 @@ public class FileDownloaderTest {
     @Test
     public void When_enqueueing_3_files_it_will_enqueue_each_file() {
         // Arrange.
-        doCallRealMethod().when(mockedDownloader).enqueueFiles(Matchers.anyListOf(Uri.class));
+        doCallRealMethod().when(mockedDownloader).enqueueFiles(Matchers.anyListOf(Uri.class), any(String.class));
         Uri file1 = Uri.parse("http://file1");
         Uri file2 = Uri.parse("http://file2");
         Uri file3 = Uri.parse("http://file3");
 
         // Act.
-        mockedDownloader.enqueueFiles(Arrays.asList(file1, file2, file3));
+        mockedDownloader.enqueueFiles(Arrays.asList(file1, file2, file3), "/path");
 
         // Assert.
-        verify(mockedDownloader).enqueueFile(file1);
-        verify(mockedDownloader).enqueueFile(file2);
-        verify(mockedDownloader).enqueueFile(file3);
+        verify(mockedDownloader).enqueueFile(file1, "/path");
+        verify(mockedDownloader).enqueueFile(file2, "/path");
+        verify(mockedDownloader).enqueueFile(file3, "/path");
     }
 
     @Test
@@ -49,7 +49,7 @@ public class FileDownloaderTest {
                 thenReturn(123L);
 
         // Act.
-        downloader.enqueueFile(Uri.parse("http://file1"));
+        downloader.enqueueFile(Uri.parse("http://file1"), "/path");
 
         // Assert.
         verify(downloadManager, only()).enqueue(any(DownloadManager.Request.class));
@@ -62,7 +62,7 @@ public class FileDownloaderTest {
                 thenReturn(123L);
 
         // Act.
-        downloader.enqueueFile(Uri.parse("file://file1"));
+        downloader.enqueueFile(Uri.parse("file://file1"), "/path");
 
         // Assert.
         verify(downloadManager, never()).enqueue(any(DownloadManager.Request.class));

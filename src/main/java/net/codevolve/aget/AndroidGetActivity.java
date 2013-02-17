@@ -6,25 +6,25 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import com.google.inject.Inject;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AndroidGetActivity extends RoboActivity {
     private static final int SELECTED_FILE_TO_LOAD = 1000;
+    private static final int SELECTED_DESTINATION_DIRECTORY = 1001;
     private static final String TAG = "AndroidGetActivity";
 
     @InjectView(R.id.loadListButton)
@@ -33,11 +33,14 @@ public class AndroidGetActivity extends RoboActivity {
     private Button goButton;
     @InjectView(R.id.fileListView)
     private ListView fileListView;
+    @InjectView(R.id.destDirTextView)
+    private TextView destDirTextView;
     private ArrayAdapter<Uri> fileArrayAdapter;
 
     @Inject
     private FileDownloader downloader;
     private ArrayList<Uri> fileUris;
+    private String destDirectory;
     private boolean hasCheckedGetContent = false;
 
     @InjectResource(R.string.no_content_handler_message)
@@ -68,6 +71,9 @@ public class AndroidGetActivity extends RoboActivity {
         fileUris = new ArrayList<Uri>();
         fileArrayAdapter = new ArrayAdapter<Uri>(this, android.R.layout.simple_list_item_1, fileUris);
         fileListView.setAdapter(fileArrayAdapter);
+
+        File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        setDestDirectory(downloadsDir.getAbsolutePath());
     }
 
     /**
@@ -82,6 +88,13 @@ public class AndroidGetActivity extends RoboActivity {
         }
 
         startActivityForResult(intent, SELECTED_FILE_TO_LOAD);
+    }
+
+    public void chooseDestinationDir(View view) {
+        Intent intent = new Intent("org.openintents.action.PICK_DIRECTORY");
+        intent.setData(Uri.parse("file://"));
+
+        startActivityForResult(intent, SELECTED_DESTINATION_DIRECTORY);
     }
 
     protected boolean checkIntent(Intent intent) {
@@ -108,7 +121,7 @@ public class AndroidGetActivity extends RoboActivity {
     }
 
     public void launchDownloads(View view) {
-        downloader.enqueueFiles(fileUris);
+        downloader.enqueueFiles(fileUris, destDirectory);
         fileArrayAdapter.clear();
     }
 
@@ -126,19 +139,34 @@ public class AndroidGetActivity extends RoboActivity {
                             loadFilesList(path);
                         } catch (IOException exc) {
                             Log.e(TAG, "Failed to load list of files!", exc);
-                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-                            alertDialogBuilder.setTitle(failedToLoadListTitle);
-                            alertDialogBuilder.setMessage(failedToLoadListMessage);
-                            alertDialogBuilder.setPositiveButton(getString(R.string.OK), null);
+                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this).
+                                    setTitle(failedToLoadListTitle).
+                                    setMessage(failedToLoadListMessage).
+                                    setPositiveButton(getString(R.string.OK), null);
                             AlertDialog alertDialog = alertDialogBuilder.create();
                             alertDialog.show();
                         }
+                    }
+                }
+            } else if (requestCode == SELECTED_DESTINATION_DIRECTORY) {
+                Uri uri = data.getData();
+
+                if (uri != null) {
+                    String path = uri.getPath();
+
+                    if (path != null) {
+                        setDestDirectory(path);
                     }
                 }
             }
         }
 
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void setDestDirectory(String path) {
+        destDirTextView.setText(path);
+        destDirectory = path;
     }
 
     private void loadFilesList(String filename) throws IOException {

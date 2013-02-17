@@ -35,6 +35,7 @@ public class AndroidGetActivityTest {
 
     private Button goButton;
     private Button loadButton;
+    private Button changeDestButton;
 
     @Before
     public void setUp() {
@@ -43,6 +44,7 @@ public class AndroidGetActivityTest {
 
         goButton = (Button) activity.findViewById(R.id.goButton);
         loadButton = (Button) activity.findViewById(R.id.loadListButton);
+        changeDestButton = (Button) activity.findViewById(R.id.changeDestButton);
     }
 
     @Test
@@ -62,6 +64,20 @@ public class AndroidGetActivityTest {
         ShadowActivity.IntentForResult intentForResult =
                 Robolectric.shadowOf(activity).getNextStartedActivityForResult();
         assertThat(intentForResult.intent.getAction(), equalTo(Intent.ACTION_GET_CONTENT));
+    }
+
+    @Test
+    public void When_dest_dir_button_clicked_it_should_switch_to_pick_dir_activity() {
+        // Arrange.
+        activity.checkIntentStubResult = true;
+
+        // Act.
+        changeDestButton.performClick();
+
+        // Assert.
+        ShadowActivity.IntentForResult intentForResult =
+                Robolectric.shadowOf(activity).getNextStartedActivityForResult();
+        assertThat(intentForResult.intent.getAction(), equalTo("org.openintents.action.PICK_DIRECTORY"));
     }
 
     @Test

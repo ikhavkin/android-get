@@ -13,14 +13,13 @@
         <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/textView" android:layout_weight="10" android:layout_gravity="center_vertical"
+                android:id="@+id/destDirTextView" android:layout_weight="10" android:layout_gravity="center_vertical"
                 android:singleLine="true"
                 android:textIsSelectable="false" android:textSize="@dimen/dest_folder_text_size"
-                android:text="rthyr hrth rt hrt "/>
+                />
         <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/change_dest_title"
                 android:id="@+id/changeDestButton"
-                android:onClick="launchDownloads"
-                />
+                android:onClick="chooseDestinationDir"/>
     </LinearLayout>
     <LinearLayout
             android:orientation="horizontal"

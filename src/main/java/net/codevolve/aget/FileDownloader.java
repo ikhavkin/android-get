@@ -2,9 +2,10 @@ package net.codevolve.aget;
 
 import android.app.DownloadManager;
 import android.net.Uri;
-import android.os.Environment;
 import android.util.Log;
 import com.google.inject.Inject;
+
+import java.io.File;
 
 public class FileDownloader {
     private final DownloadManager downloadManager;
@@ -15,13 +16,13 @@ public class FileDownloader {
         this.downloadManager = downloadManager;
     }
 
-    public void enqueueFiles(Iterable<Uri> files) {
+    public void enqueueFiles(Iterable<Uri> files, String destDirectory) {
         for (Uri file : files) {
-            enqueueFile(file);
+            enqueueFile(file, destDirectory);
         }
     }
 
-    public void enqueueFile(Uri fileUri) {
+    public void enqueueFile(Uri fileUri, String destDirectory) {
         String scheme = fileUri.getScheme();
         if (!"http".equals(scheme) && !"https".equals(scheme)) {
             Log.w(TAG, String.format("Ignoring not HTTP/HTTPS uri: %s", fileUri));
@@ -34,7 +35,10 @@ public class FileDownloader {
         request.setTitle(localFileName);
         request.allowScanningByMediaScanner();
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, localFileName);
+
+        Uri.Builder destUriBuilder = Uri.fromFile(new File(destDirectory)).buildUpon();
+        destUriBuilder.appendPath(localFileName);
+        request.setDestinationUri(destUriBuilder.build());
 
         downloadManager.enqueue(request);
     }
